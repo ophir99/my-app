@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-
 class ListPosts extends Component {
   constructor(props) {
     super(props);
@@ -17,7 +16,8 @@ class ListPosts extends Component {
   render() {
     return (
       <div>
-        <h1>Welcome to ListPosts!!! {this.state.x}</h1>
+        <h1>Welcome to ListPosts!!!</h1>
+        <p>There are -no. of posts</p>
       </div>
     );
   }

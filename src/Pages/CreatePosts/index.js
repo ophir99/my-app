@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 
+import store from "../../data";
+console.log("Store", store.getState());
 const CreatePosts = () => {
   const [post, setPost] = useState("Hi");
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState(store.getState());
   useEffect(() => {
     console.log("Rendering....", post);
   });
@@ -13,7 +15,15 @@ const CreatePosts = () => {
   };
 
   const submitHandler = () => {
-    setPosts([...posts, post]);
+    // store.posts = [...posts, post];
+    //Event : CREATE_POST
+    store.dispatch({
+      type: "",
+      payload: post,
+    });
+    const posts_ = store.getState();
+    console.log("POSTS", posts_);
+    setPosts(posts_);
   };
   return (
     <div>
