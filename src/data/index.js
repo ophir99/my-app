@@ -8,6 +8,12 @@ function postsReducer(state = [], action) {
     console.log("State--", state);
     return [...state, action.payload];
   }
+  if (action.type == "REMOVE_POST") {
+    const newState = [...state];
+    const index = action.payload;
+    newState.splice(index, 1);
+    return newState;
+  }
   return state;
 }
 

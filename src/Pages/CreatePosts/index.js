@@ -5,6 +5,10 @@ console.log("Store", store.getState());
 const CreatePosts = () => {
   const [post, setPost] = useState("Hi");
   const [posts, setPosts] = useState(store.getState());
+  store.subscribe(() => {
+    console.log("State updated---logging from subscribe");
+    setPosts(store.getState());
+  });
   useEffect(() => {
     console.log("Rendering....", post);
   });
@@ -18,12 +22,18 @@ const CreatePosts = () => {
     // store.posts = [...posts, post];
     //Event : CREATE_POST
     store.dispatch({
-      type: "",
+      type: "CREATE_POST",
       payload: post,
     });
-    const posts_ = store.getState();
-    console.log("POSTS", posts_);
-    setPosts(posts_);
+    setPost("");
+  };
+
+  const removePost = (index) => {
+    console.log("Removing post--");
+    store.dispatch({
+      type: "REMOVE_POST",
+      payload: index,
+    });
   };
   return (
     <div>
@@ -34,21 +44,28 @@ const CreatePosts = () => {
             <td>
               <textarea
                 onChange={handleChange}
-                defaultValue={post}
+                value={post}
                 placeholder="Whats in your mind??"
               ></textarea>
             </td>
           </tr>
           <tr>
             <td>
-              <button onClick={submitHandler}>Submit</button>
+              <button disabled={post.length == 0} onClick={submitHandler}>
+                Submit
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
       <ul>
         {posts.map((post, index) => {
-          return <li key={index}>{post}</li>;
+          return (
+            <li key={index}>
+              <p>{post}</p>
+              <button onClick={() => removePost(index)}>X</button>
+            </li>
+          );
         })}
       </ul>
     </div>

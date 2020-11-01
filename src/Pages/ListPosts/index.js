@@ -1,15 +1,19 @@
 import React, { Component } from "react";
+import store from "../../data";
 class ListPosts extends Component {
   constructor(props) {
     super(props);
     this.state = {
       x: 0,
+      posts: [],
     };
   }
   componentDidMount() {
     console.log("Mounted");
-    this.setState({ x: 1 });
+    const posts = store.getState();
+    this.setState({ x: 1, posts });
   }
+
   componentDidUpdate() {
     console.log("Updated");
   }
@@ -17,7 +21,12 @@ class ListPosts extends Component {
     return (
       <div>
         <h1>Welcome to ListPosts!!!</h1>
-        <p>There are -no. of posts</p>
+        <p>There are -no. {this.state.posts.length} of posts</p>
+        <ul>
+          {this.state.posts.map((post, index) => {
+            return <li key={index}>{post}</li>;
+          })}
+        </ul>
       </div>
     );
   }
