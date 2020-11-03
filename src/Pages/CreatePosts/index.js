@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from "react";
+import { NavLink } from "react-router-dom";
 
 import store from "../../data";
 console.log("Store", store.getState());
 const CreatePosts = () => {
   const [post, setPost] = useState("Hi");
   const [posts, setPosts] = useState(store.getState());
-  store.subscribe(() => {
-    console.log("State updated---logging from subscribe");
-    setPosts(store.getState());
-  });
+
   useEffect(() => {
-    console.log("Rendering....", post);
-  });
+    store.subscribe(() => {
+      console.log("State updated---logging from subscribe");
+      setPosts(store.getState());
+    });
+    store.dispatch({
+      type: "CREATE_POST",
+      payload: "This is javascript",
+    });
+  }, []);
+  // Did Mount and Did Update
 
   const handleChange = (event) => {
     const value = event.currentTarget.value;
@@ -64,6 +70,9 @@ const CreatePosts = () => {
             <li key={index}>
               <p>{post}</p>
               <button onClick={() => removePost(index)}>X</button>
+              <NavLink to={`/viewpost/${index}`}>
+                <button>View More</button>
+              </NavLink>
             </li>
           );
         })}
