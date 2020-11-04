@@ -24,7 +24,7 @@ class ListPosts extends Component {
         <p>There are -no. {this.state.posts.length} of posts</p>
         <ul>
           {this.state.posts.map((post, index) => {
-            return <li key={index}>{post}</li>;
+            return <li key={index}>{post.text}</li>;
           })}
         </ul>
       </div>

@@ -17,7 +17,6 @@ const CreatePosts = () => {
       payload: "This is javascript",
     });
   }, []);
-  // Did Mount and Did Update
 
   const handleChange = (event) => {
     const value = event.currentTarget.value;
@@ -68,7 +67,7 @@ const CreatePosts = () => {
         {posts.map((post, index) => {
           return (
             <li key={index}>
-              <p>{post}</p>
+              <p>{JSON.stringify(post)}</p>
               <button onClick={() => removePost(index)}>X</button>
               <NavLink to={`/viewpost/${index}`}>
                 <button>View More</button>

@@ -1,18 +1,34 @@
 import { createStore } from "redux";
+import { v4 as createUniqueId } from "uuid";
 
 function postsReducer(state = [], action) {
-  console.log("State--", state);
-
-  console.log("Pinging from PostsReducer", action);
-  if (action.type == "CREATE_POST") {
+  const { type, payload } = action;
+  console.log("ACTION", action);
+  if (type == "CREATE_POST") {
     console.log("State--", state);
-    return [...state, action.payload];
+    const id = createUniqueId();
+    console.log("Id is", id);
+    const obj = {
+      id,
+      text: payload,
+      comments: [],
+    };
+    return [...state, obj];
   }
-  if (action.type == "REMOVE_POST") {
+  if (type == "REMOVE_POST") {
     const newState = [...state];
     const index = action.payload;
     newState.splice(index, 1);
     return newState;
+  }
+  if (type == "ADD_COMMENT") {
+    const tempState = [...state];
+    for (let i = 0; i < tempState.length; i++) {
+      if (tempState[i].id === action.payload.postId) {
+        tempState[i].comments.push(action.payload.comment);
+      }
+    }
+    return tempState;
   }
   return state;
 }
