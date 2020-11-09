@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-
-import store from "../../data";
-console.log("Store", store.getState());
+import { useSelector, useDispatch } from "react-redux";
 const CreatePosts = () => {
   const [post, setPost] = useState("Hi");
-  const [posts, setPosts] = useState(store.getState());
+  const dispatch = useDispatch();
+  const posts = useSelector((state) => {
+    console.log("State from useSelector", state);
+    return state.posts;
+  });
 
   useEffect(() => {
-    store.subscribe(() => {
-      console.log("State updated---logging from subscribe");
-      setPosts(store.getState());
-    });
-    store.dispatch({
-      type: "CREATE_POST",
-      payload: "This is javascript",
-    });
+    // store.dispatch({
+    //   type: "CREATE_POST",
+    //   payload: "This is javascript",
+    // });
   }, []);
 
   const handleChange = (event) => {
@@ -24,9 +22,8 @@ const CreatePosts = () => {
   };
 
   const submitHandler = () => {
-    // store.posts = [...posts, post];
     //Event : CREATE_POST
-    store.dispatch({
+    dispatch({
       type: "CREATE_POST",
       payload: post,
     });
@@ -35,7 +32,7 @@ const CreatePosts = () => {
 
   const removePost = (index) => {
     console.log("Removing post--");
-    store.dispatch({
+    dispatch({
       type: "REMOVE_POST",
       payload: index,
     });

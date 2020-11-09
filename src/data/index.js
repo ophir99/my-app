@@ -1,17 +1,15 @@
-import { createStore } from "redux";
+import { createStore, combineReducers } from "redux";
 import { v4 as createUniqueId } from "uuid";
 
 function postsReducer(state = [], action) {
   const { type, payload } = action;
   console.log("ACTION", action);
   if (type == "CREATE_POST") {
-    console.log("State--", state);
     const id = createUniqueId();
     console.log("Id is", id);
     const obj = {
       id,
       text: payload,
-      comments: [],
     };
     return [...state, obj];
   }
@@ -21,19 +19,32 @@ function postsReducer(state = [], action) {
     newState.splice(index, 1);
     return newState;
   }
+  return state;
+}
+
+function commentsReducer(state = [], action) {
+  const { type } = action;
+  console.log("ACTION", action);
   if (type == "ADD_COMMENT") {
-    const tempState = [...state];
-    for (let i = 0; i < tempState.length; i++) {
-      if (tempState[i].id === action.payload.postId) {
-        tempState[i].comments.push(action.payload.comment);
-      }
-    }
+    const newComment = {
+      id: `comment-${createUniqueId()}`,
+      ...action.payload,
+    };
+    const tempState = [...state, newComment];
     return tempState;
   }
   return state;
 }
 
-const store = createStore(postsReducer); // {}
+const rootReducer = combineReducers({
+  posts: postsReducer,
+  comments: commentsReducer,
+  userDetails: function (state = {}, action) {
+    return state;
+  },
+});
+
+const store = createStore(rootReducer); // {}
 export default store;
 
 // Representation

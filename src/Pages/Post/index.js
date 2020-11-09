@@ -1,46 +1,41 @@
-import React, { useEffect, useState } from "react";
-import store from "../../data";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 const Post = (props) => {
-  let subscription;
   const indexOfPost = props.match.params.postIndex;
-  const [post, setPost] = useState({ id: "", text: "", comments: [] });
-  const [comment, setComment] = useState("");
-  useEffect(() => {
-    const state = store.getState();
-    console.log("State*****", state);
-    if (state[indexOfPost] != undefined) {
-      setPost(state[indexOfPost]);
-    }
-    subscription = store.subscribe(() => {
-      console.log("State updated...", store.getState());
-      const state = store.getState();
-      if (state[indexOfPost] != undefined) {
-        console.log("*******67676", state[indexOfPost]);
-        const newPost = {
-          ...state[indexOfPost],
-        };
-        setPost(newPost);
-      }
+  const post = useSelector((state) => {
+    return state.posts[indexOfPost];
+  });
+  const comments = useSelector((state) => {
+    const newComments = state.comments.filter(
+      (comment) => comment.belongsTo === post.id
+    );
+    return newComments.map((comment) => {
+      return {
+        ...comment,
+        likes: 0,
+        dislikes: 0,
+      };
     });
-    return () => {
-      subscription();
-    };
-  }, []);
+  });
+  const dispatch = useDispatch();
+  const [comment, setComment] = useState("");
+
   return (
     <div>
       <h1>{post.text}</h1>
+      <p>{post.id}</p>
       <textarea
         onKeyUp={(event) => {
           const { value } = event.currentTarget;
           const { keyCode } = event;
           console.log("KeyCode", keyCode);
           if (keyCode === 13) {
-            store.dispatch({
+            dispatch({
               type: "ADD_COMMENT",
               payload: {
-                postId: post.id,
-                comment: value,
+                belongsTo: post.id,
+                text: comment,
               },
             });
           } else {
@@ -49,8 +44,14 @@ const Post = (props) => {
         }}
       />
       <ol>
-        {post.comments.map((comment, index) => (
-          <li key={index}>{comment}</li>
+        {comments.map((comment, index) => (
+          <li key={index}>
+            <h2>{comment.text}</h2>
+            <p>Belongs to: {comment.belongsTo}</p>
+            <p>Id: {comment.id}</p>
+            <button>{comment.likes}</button>
+            <button>{comment.dislikes}</button>
+          </li>
         ))}
       </ol>
     </div>
